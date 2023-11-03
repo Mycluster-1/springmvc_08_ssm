@@ -19,29 +19,36 @@ public class BrandController {
     }
 
     @DeleteMapping("/{id}")
-    public boolean deleteByPrimaryKey(@PathVariable("id") Integer id) {
-        System.out.println("删除");
-        return brandService.deleteByPrimaryKey(id);
+    public Result deleteByPrimaryKey(@PathVariable("id") Integer id) {
+        boolean flag = brandService.deleteByPrimaryKey(id);
+        return Result.builder().code(flag ? Code.DELETE_OK : Code.DELETE_ERR).data(flag).build();
     }
 
     @PostMapping
-    public boolean insert(@RequestBody Brand record) {
-        return brandService.insert(record);
+    public Result insert(@RequestBody Brand record) {
+        boolean flag = brandService.insert(record);
+        return Result.builder().code(flag ? Code.SAVE_OK : Code.SAVE_ERR).data(flag).build();
     }
 
     @GetMapping("/{id}")
-    public Brand selectByPrimaryKey(@PathVariable("id") Integer id) {
-        System.out.println("查询单个");
-        return brandService.selectByPrimaryKey(id);
+    public Result selectByPrimaryKey(@PathVariable("id") Integer id) {
+        Brand brand = brandService.selectByPrimaryKey(id);
+        Integer code = brand != null ? Code.GET_0K : Code.GET_ERR;
+        String msg = brand != null ? "" : "查询失败,请重试";
+        return Result.builder().code(code).data(brand).msg(msg).build();
     }
 
     @PutMapping
-    public boolean updateByPrimaryKey(@RequestBody Brand record) {
-        return brandService.updateByPrimaryKey(record);
+    public Result updateByPrimaryKey(@RequestBody Brand record) {
+        boolean flag = brandService.updateByPrimaryKey(record);
+        return Result.builder().code(flag ? Code.UPDATE_OK : Code.UPDATE_ERR).data(flag).build();
     }
 
     @GetMapping
-    public List<Brand> selectAll() {
-        return brandService.selectAll();
+    public Result selectAll() {
+        List<Brand> brandList = brandService.selectAll();
+        Integer code = brandList != null ? Code.GET_0K : Code.GET_ERR;
+        String msg = brandList != null ? "" : "查询失败,请重试";
+        return Result.builder().code(code).data(brandList).msg(msg).build();
     }
 }
